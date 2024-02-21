@@ -48,9 +48,11 @@ def get_single_address(address_id: int, db = Depends(get_db)):
 
 @app.get("/addresses/distance/{place1}/{place2}")
 def calculate_distance(place1: str, place2: str, db = Depends(get_db)):
-    # Query the database for the places
     place1_db = db.query(Address).filter(Address.name == place1).first()
     place2_db = db.query(Address).filter(Address.name == place2).first()
+
+    if place1_db is None or place2_db is None:
+        return "places not found , add them sorry for INCONVIENCE!!"
 
     # Calculate the distance between the places
     coords1 = (float(place1_db.latitude), float(place1_db.longitude))
