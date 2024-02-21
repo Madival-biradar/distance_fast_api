@@ -59,25 +59,3 @@ def calculate_distance(place1: str, place2: str, db = Depends(get_db)):
 
     return f'{place1} and {place2} are {distance} KM far away from each other'
 
-
-
-
-
-
-
-
-# @app.get("/addresses/distance/")
-# def get_addresses_within_distance(
-#     latitude: float,
-#     longitude: float,
-#     distance: Optional[float] = Query(..., gt=0),
-#     db = Depends(get_db)
-# ):
-#     addresses = get_addresses(db)
-#     valid_addresses = []
-#     for address in addresses:
-#         address_coordinates = (address.latitude, address.longitude)
-#         given_coordinates = (latitude, longitude)
-#         if geodesic(given_coordinates, address_coordinates).miles <= distance:
-#             valid_addresses.append(address)
-#     return valid_addresses
