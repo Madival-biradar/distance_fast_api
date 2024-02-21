@@ -11,6 +11,7 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
+#methods to stop the or exit the terminal in FASTAPI
 def receive_signal(signalNumber, frame):
     print('Received:', signalNumber)
     sys.exit()
@@ -19,9 +20,8 @@ def receive_signal(signalNumber, frame):
 async def startup_event():
     import signal
     signal.signal(signal.SIGINT, receive_signal)
-    # startup tasks
 
-# API Endpoints
+
 @app.post("/addresses/", response_model=AddressInDB)
 def create_new_address(address: AddressCreate, db = Depends(get_db)):
     return create_address(db, address)
@@ -38,18 +38,18 @@ def delete_existing_address(address_id: int, db = Depends(get_db)):
 def get_all_addresses(skip: int = 0, limit: int = 10, db = Depends(get_db)):
     return get_addresses(db, skip, limit)
 
-@app.get("/addresses/{address_id}", response_model=AddressInDB)
-def get_single_address(address_id: int, db = Depends(get_db)):
-    db_address = get_address(db, address_id)
-    if db_address is None:
-        raise HTTPException(status_code=404, detail="Address not found")
-    return db_address
+@app.get("/addresses/{place}")
+def get_single_address(place: str, db = Depends(get_db)):
+    place1_db = db.query(Address).filter(func.lower(Address.name) == place.lower()).first()
+    if place1_db is None:
+        raise HTTPException(status_code=404, detail=f"{place}  not found")
+    return place1_db
 
 
 @app.get("/addresses/distance/{place1}/{place2}")
 def calculate_distance(place1: str, place2: str, db = Depends(get_db)):
-    place1_db = db.query(Address).filter(Address.name == place1).first()
-    place2_db = db.query(Address).filter(Address.name == place2).first()
+    place1_db = db.query(Address).filter(func.lower(Address.name) == place1.lower()).first()
+    place2_db = db.query(Address).filter(func.lower(Address.name) == place2.lower()).first()
 
     if place1_db is None or place2_db is None:
         return "places not found , add them sorry for INCONVIENCE!!"
