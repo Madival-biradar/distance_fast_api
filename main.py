@@ -46,6 +46,20 @@ def get_single_address(address_id: int, db = Depends(get_db)):
     return db_address
 
 
+@app.get("/addresses/distance/{place1}/{place2}")
+def calculate_distance(place1: str, place2: str, db = Depends(get_db)):
+    # Query the database for the places
+    place1_db = db.query(Address).filter(Address.name == place1).first()
+    place2_db = db.query(Address).filter(Address.name == place2).first()
+
+    # Calculate the distance between the places
+    coords1 = (float(place1_db.latitude), float(place1_db.longitude))
+    coords2 = (float(place2_db.latitude), float(place2_db.longitude))
+    distance = geodesic(coords1, coords2).kilometers
+
+    return f'{place1} and {place2} are {distance} KM far away from each other'
+
+
 
 
 
