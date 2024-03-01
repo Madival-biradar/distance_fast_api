@@ -51,7 +51,7 @@ def get_places_within_distance(db, latitude: float, longitude: float, distance: 
     try:
         for place in places:
             coords1 = (latitude, longitude)
-            coords2 = (place.latitude, place.longitude)  # Adjust this according to your Address class
+            coords2 = (place.latitude, place.longitude) 
             distance_found = geodesic(coords1, coords2).kilometers
             if distance_found <= distance:
                 places_within_distance.append({
@@ -63,7 +63,7 @@ def get_places_within_distance(db, latitude: float, longitude: float, distance: 
         print(places_within_distance)
     except Exception as e:
         print(e)
-        return e
+        raise HTTPException(status_code=404, detail="something went wrong")
     finally: 
         print(f'successfull executed, we found  {len(places_within_distance)} cities')
     return places_within_distance
