@@ -43,3 +43,27 @@ def delete_address(db, address_id: int):
         return {"message": "Address deleted successfully"}
     else:
         raise HTTPException(status_code=404, detail="Address not found")
+    
+
+def get_places_within_distance(db, latitude: float, longitude: float, distance: int):
+    places = db.query(Address).all()
+    places_within_distance = []
+    try:
+        for place in places:
+            coords1 = (latitude, longitude)
+            coords2 = (place.latitude, place.longitude)  # Adjust this according to your Address class
+            distance_found = geodesic(coords1, coords2).kilometers
+            if distance_found <= distance:
+                places_within_distance.append({
+                    "id": place.id,
+                    "latitude": place.latitude,
+                    "longitude": place.longitude,
+                    "name": place.name
+                })
+        print(places_within_distance)
+    except Exception as e:
+        print(e)
+        return e
+    finally: 
+        print(f'successfull executed, we found  {len(places_within_distance)} cities')
+    return places_within_distance

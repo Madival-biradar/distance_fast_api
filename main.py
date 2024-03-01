@@ -60,19 +60,8 @@ def get_single_address(place: str, db = Depends(get_db)):
     return place1_db
 
 
-@app.get("/addresses/distance/{place1}/{place2}")
-def calculate_distance(place1: str, place2: str, db = Depends(get_db)):
-    logger.debug(f"finding the distance between two places,{place1} and {place2}")
-    place1_db = db.query(Address).filter(func.lower(Address.name) == place1.lower()).first()
-    place2_db = db.query(Address).filter(func.lower(Address.name) == place2.lower()).first()
-
-    if place1_db is None or place2_db is None:
-        return f"{place1_db} or {place2_db} not found , add them first sorry for INCONVIENCE!!"
-
-    # Calculate the distance between the places
-    coords1 = (float(place1_db.latitude), float(place1_db.longitude))
-    coords2 = (float(place2_db.latitude), float(place2_db.longitude))
-    distance = geodesic(coords1, coords2).kilometers
-    logger.debug(distance)
-    return f'{place1} and {place2} are {distance} KM far away from each other'
-
+@app.get("/addresses/distance/{latitude}/{longitude}/{distance}",response_model=List[AddressInDB])
+def calculate_distance(latitude: float, longitude: float, distance: int, db = Depends(get_db)):
+    logger.debug(latitude,longitude,distance)
+    places_within_distance = get_places_within_distance(db, latitude, longitude, distance)
+    return places_within_distance
