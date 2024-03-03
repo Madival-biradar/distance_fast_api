@@ -16,5 +16,7 @@ create the virtual env and activate and install all dependencies using the requi
 6. take the http url and paste the browser to check the all apis with swagger.
 7. for finding distance u can provide any names of the places which should be 
     added first in DB. u can use lower,upper,capitalize,trailing or leading spaces.
+8. This application hs been hosted in ec2 instance also u can use
+    http://ec2-35-154-166-237.ap-south-1.compute.amazonaws.com:8000/docs
 
 
